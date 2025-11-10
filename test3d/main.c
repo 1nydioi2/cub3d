@@ -37,8 +37,8 @@ typedef struct	s_data
 	t_img	img_wall;
 	t_img	img_ground;
 
-	int			player_x;
-	int			player_y;
+	float		player_x;
+	float		player_y;
 	float		player_dx;
 	float		player_dy;
 	float		player_angle;
@@ -46,7 +46,24 @@ typedef struct	s_data
 	char	map[MAP_HEIGHT][MAP_WIDTH];
 }				t_data;
 
-//void	print_ray(t_data *_data, int )
+void	print_ray(t_data *_data, float nx, float ny)
+{
+	float	dx;
+	float	dy;
+	int		div;
+	int		x;
+	int		y;
+
+	dx = (nx - _data->player_x);
+	dy = (ny - _data->player_y);
+	
+	if (dx > dy)
+		div = dx / dy;
+	else
+		div = dy / dx;
+	x = ;
+	while (x <)
+}
 
 void	print_map(t_data *_data)
 {
@@ -105,7 +122,7 @@ int	key_hook(int keycode, t_data *_data)
 			_data->player_a -= 0.1;
 			if (_data->player_a < 0)
 				_data->player_a += (2 * PY);
-			_data->player_dx = (sin(pa) * 5);
+			_data->player_dx = (cos(pa) * 5);
 			_data->player_dy = (sin(pa) * 5);
 			refresh_player_pos(_data, _data->player_x - 5, _data->player_y);
 			break;
@@ -120,7 +137,7 @@ int	key_hook(int keycode, t_data *_data)
 			_data->player_a += 0.1;
 			if (_data->player_a > (2 * PI))
 				_data->player_a -= (2 * PY);
-			_data->player_dx = (sin(pa) * 5);
+			_data->player_dx = (cos(pa) * 5);
 			_data->player_dy = (sin(pa) * 5);
 			refresh_player_pos(_data, _data->player_x + 5, _data->player_y);
 			break;
