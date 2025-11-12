@@ -1,6 +1,7 @@
 EXEC_NAME = cub3d
 
 SOURCES = main.c \
+		  ft_abs.c
 
 OBJECTS = $(SOURCES:.c=.o)
 
