@@ -1,13 +1,13 @@
-void	ft_abs(int *value)
+int	ft_abs(int value)
 {
 	if (value < 0)
-		*value *= -1;
-	return ;
+		return (value *= -1);
+	return (value);
 }
 
-void	ft_fabs(float *value)
+float	ft_fabs(float value)
 {
 	if (value < 0)
-		*value *= -1;
-	return ;
+		return (value *= -1);
+	return value;
 }

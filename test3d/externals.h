@@ -1,2 +1,2 @@
-void	ft_abs(int		*value);
-void	ft_fabs(float	*value);
+int		ft_abs(int	value);
+float	ft_fabs(float	value);
