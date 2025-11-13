@@ -6,7 +6,7 @@
 /*   By: nilamber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 14:19:52 by nilamber          #+#    #+#             */
-/*   Updated: 2025/11/12 19:44:53 by nilamber         ###   ########.fr       */
+/*   Updated: 2025/11/13 17:06:49 by nilamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,11 +71,11 @@ typedef	struct	s_pos
 void	set_pos(t_pos *x, t_pos	*y, t_pos **weak, t_pos **strong)
 {
 	x->s = 1 - (2 * (x->delta < 0));
-	x->delta = ft_fabs(x->delta);
+	x->delta = ft_abs(x->delta);
 	x->v = 0;
 
 	y->s = 1 - (2 * (y->delta < 0));
-	y->delta = ft_fabs(y->delta);
+	y->delta = ft_abs(y->delta);
 	y->v = 0;
 
 	if (x->delta < y->delta)
@@ -109,16 +109,20 @@ void	print_line(t_data *_data, float nx, float ny)
 		div = strong->delta;
 	else
 		div = strong->delta / weak->delta;
-	while (ft_abs(x.v) < x.delta && ft_abs(y.v) < y.delta)
+	printf("div = %d\tpx = %f\tpy = %f\tpa = %f\n",div, _data->player_x, _data->player_y, _data->player_a);
+	printf("x = %d\ty = %d\txd = %d, yd = %d\tnx = %f, ny = %f\n",
+			x.v, y.v, x.delta, y.delta, nx, ny);
+	while (ft_abs(x.v) + ft_abs(y.v) < x.delta + y.delta)
 	{
-		if (strong->v > weak->v + div)
+		if (ft_abs(strong->v) > ft_abs(weak->v) * div)
 			weak->v += weak->s;
 		else
 			strong->v += strong->s;
 		mlx_put_image_to_window(_data->mlx, _data->win, _data->img_line.img,
-			_data->player_x + x.v, _data->player_y + y.v);
+			_data->player_x + x.v + 7, _data->player_y + y.v + 7);
 		printf("x = %d\ty = %d\n", x.v, y.v);
 	}
+	printf("-------------------------------------------------\n");
 	return ;
 }
 
@@ -163,7 +167,9 @@ void	refresh_player_pos(t_data *_data, float new_x, float new_y)
 	_data->player_x = new_x;
 	_data->player_y = new_y;
 	mlx_put_image_to_window(_data->mlx, _data->win, _data->img_plr.img, _data->player_x, _data->player_y);
-	print_line(_data, _data->player_x + _data->player_dx, _data->player_y + _data->player_dy);
+	print_line(_data, 
+		_data->player_x + (_data->player_dx * 1.1),
+		_data->player_y + (_data->player_dy * 1.1));
 }
 
 int	key_hook(int keycode, t_data *_data)
@@ -182,8 +188,8 @@ int	key_hook(int keycode, t_data *_data)
 			_data->player_a -= 0.1;
 			if (_data->player_a < 0)
 				_data->player_a += (2 * PI);
-			_data->player_dx = (cos(_data->player_a) * 10);
-			_data->player_dy = (sin(_data->player_a) * 10);
+			_data->player_dx = (cos(_data->player_a) * 20);
+			_data->player_dy = (sin(_data->player_a) * 20);
 			refresh_player_pos(_data, _data->player_x, _data->player_y);
 			break;
 		}
@@ -199,8 +205,8 @@ int	key_hook(int keycode, t_data *_data)
 			_data->player_a += 0.1;
 			if (_data->player_a > (2 * PI))
 				_data->player_a -= (2 * PI);
-			_data->player_dx = (cos(_data->player_a) * 10);
-			_data->player_dy = (sin(_data->player_a) * 10);
+			_data->player_dx = (cos(_data->player_a) * 20);
+			_data->player_dy = (sin(_data->player_a) * 20);
 			refresh_player_pos(_data, _data->player_x, _data->player_y);
 			break;
 		}
@@ -260,14 +266,14 @@ int	main()
 	_data.img_wall.height = 20;
 	_data.img_ground.width = 20;
 	_data.img_ground.height = 20;
-	_data.img_line.width = 1;
-	_data.img_line.height = 1;
+	_data.img_line.width = 3;
+	_data.img_line.height = 3;
 
 	_data.img_plr.img = mlx_xpm_file_to_image(_data.mlx, "images/20px_Player.xpm", &_data.img_plr.width, &_data.img_plr.height);	
 	_data.img_eraser.img = mlx_xpm_file_to_image(_data.mlx, "images/20px_Black.xpm", &_data.img_eraser.width, &_data.img_eraser.height);	
 	_data.img_wall.img = mlx_xpm_file_to_image(_data.mlx, "images/50px_White.xpm", &_data.img_wall.width, &_data.img_wall.height);	
 	_data.img_ground.img = mlx_xpm_file_to_image(_data.mlx, "images/50px_Gray.xpm", &_data.img_ground.width, &_data.img_ground.height);	
-	_data.img_line.img = mlx_xpm_file_to_image(_data.mlx, "images/1px_Line.xpm", &_data.img_ground.width, &_data.img_ground.height);	
+	_data.img_line.img = mlx_xpm_file_to_image(_data.mlx, "images/3px_Line.xpm", &_data.img_ground.width, &_data.img_ground.height);	
 	
 	cpy_map(&_data);
 	_data.player_a = 0;
