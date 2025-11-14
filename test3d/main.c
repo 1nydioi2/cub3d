@@ -6,67 +6,12 @@
 /*   By: nilamber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 14:19:52 by nilamber          #+#    #+#             */
-/*   Updated: 2025/11/13 17:06:49 by nilamber         ###   ########.fr       */
+/*   Updated: 2025/11/14 11:10:04 by nilamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "mlx/mlx.h"
+#include "cub3d.h"
 #include "externals.h"
-
-#define PI 3.14159265
-
-#define UP_ARROW 65362
-#define LEFT_ARROW 65361
-#define DOWN_ARROW 65364
-#define RIGHT_ARROW 65363
-#define ESC_KEY 65307
-
-#define MAP_HEIGHT 9
-#define MAP_WIDTH 9
-
-typedef struct	s_img
-{
-	void	*img;
-	char	*addr;
-	int		bits_per_pixel;
-	int		width;
-	int		height;
-	int		line_length;
-	int		endian;
-}				t_img;
-
-
-typedef struct	s_data
-{
-	void	*mlx;
-	void	*win;
-	
-	t_img	img_plr;
-	t_img	img_eraser;
-	t_img	img_wall;
-	t_img	img_ground;
-	t_img	img_line;
-
-	float		player_x;
-	float		player_y;
-	float		player_dx;
-	float		player_dy;
-	float		player_a;
-
-	char	map[MAP_HEIGHT][MAP_WIDTH];
-}				t_data;
-
-typedef	struct	s_pos
-{
-	int	v;
-	int	delta;
-	int	s;
-
-}		t_pos;
 
 void	set_pos(t_pos *x, t_pos	*y, t_pos **weak, t_pos **strong)
 {
@@ -92,7 +37,7 @@ void	set_pos(t_pos *x, t_pos	*y, t_pos **weak, t_pos **strong)
 	return ;
 }
 
-void	print_line(t_data *_data, float nx, float ny)
+void	print_line(t_data *data, float nx, float ny)
 {
 	t_pos	x;
 	t_pos	y;
@@ -102,31 +47,31 @@ void	print_line(t_data *_data, float nx, float ny)
 
 	weak = NULL;
 	strong = NULL;
-	x.delta = nx - _data->player_x;
-	y.delta = ny - _data->player_y;
+	x.delta = nx - data->player_x;
+	y.delta = ny - data->player_y;
 	set_pos(&x, &y, &weak, &strong);
 	if (strong->delta == 0 || weak->delta == 0)
 		div = strong->delta;
 	else
 		div = strong->delta / weak->delta;
-	printf("div = %d\tpx = %f\tpy = %f\tpa = %f\n",div, _data->player_x, _data->player_y, _data->player_a);
-	printf("x = %d\ty = %d\txd = %d, yd = %d\tnx = %f, ny = %f\n",
-			x.v, y.v, x.delta, y.delta, nx, ny);
+//	printf("div = %d\tpx = %f\tpy = %f\tpa = %f\n",div, data->player_x, data->player_y, data->player_a);
+//	printf("x = %d\ty = %d\txd = %d, yd = %d\tnx = %f, ny = %f\n",
+//			x.v, y.v, x.delta, y.delta, nx, ny);
 	while (ft_abs(x.v) + ft_abs(y.v) < x.delta + y.delta)
 	{
 		if (ft_abs(strong->v) > ft_abs(weak->v) * div)
 			weak->v += weak->s;
 		else
 			strong->v += strong->s;
-		mlx_put_image_to_window(_data->mlx, _data->win, _data->img_line.img,
-			_data->player_x + x.v + 7, _data->player_y + y.v + 7);
-		printf("x = %d\ty = %d\n", x.v, y.v);
+		mlx_put_image_to_window(data->mlx, data->win, data->img_line.img,
+			data->player_x + x.v + OFFSET, data->player_y + y.v + OFFSET);
+//		printf("x = %d\ty = %d\n", x.v, y.v);
 	}
-	printf("-------------------------------------------------\n");
+//	printf("-------------------------------------------------\n");
 	return ;
 }
 
-void	print_map(t_data *_data)
+void	print_map(t_cub *cub)
 {
 	int	mx;
 	int	my;
@@ -141,17 +86,12 @@ void	print_map(t_data *_data)
 		x = 5;
 		while(mx < MAP_WIDTH)
 		{
-			if (_data->map[my][mx] == 1)
-			{
+			if (cub->map.map[my][mx] == 1)
 				mlx_put_image_to_window(
-						_data->mlx, _data->win, _data->img_wall.img, x, y);
-			}
-			else if (_data->map[my][mx] == 0)
-			{
+						data->mlx, data->win, data->img_wall.img, x, y);
+			else if (cub->map.map[my][mx] == 0)
 				mlx_put_image_to_window(
-						_data->mlx, _data->win, _data->img_ground.img, x, y);
-
-			}	
+						data->mlx, data->win, data->img_ground.img, x, y);
 			mx++;
 			x += 52;
 		}
@@ -160,129 +100,78 @@ void	print_map(t_data *_data)
 	}
 }
 
-void	refresh_player_pos(t_data *_data, float new_x, float new_y)
+void	refresh_player_pos(t_cub *cub, int sign)
 {
-	mlx_put_image_to_window(_data->mlx, _data->win, _data->img_eraser.img, _data->player_x, _data->player_y);
-	print_map(_data);
-	_data->player_x = new_x;
-	_data->player_y = new_y;
-	mlx_put_image_to_window(_data->mlx, _data->win, _data->img_plr.img, _data->player_x, _data->player_y);
-	print_line(_data, 
-		_data->player_x + (_data->player_dx * 1.1),
-		_data->player_y + (_data->player_dy * 1.1));
+	mlx_put_image_to_window(data->mlx, data->win,
+			data->img_eraser.img, data->player_x, data->player_y);
+	print_map(cub);
+	cub->data.player_x += (cub->data.player_dx * sign);
+	cub->data.player_y += (cub->data.player_dy * sign);
+	print_line(cub->data, 
+		cub->data.player_x + (cub->data.player_dx * 1.1),
+		cub->data.player_y + (cub->data.player_dy * 1.1));
+	mlx_put_image_to_window(data->mlx, data->win,
+			data->img_plr.img, data->player_x, data->player_y);
 }
 
-int	key_hook(int keycode, t_data *_data)
+int	key_hook(int keycode, t_cub *cub)
 {
-	switch (keycode)
+	if (keycode == KEY_UP || keycode == KEY_W)
+		refresh_player_pos(cub, -1); 
+	else if (keycode == KEY_DOWN || keycode == KEY_S)
+		refresh_player_pos(cub, 1); 
+	else if (keycode == KEY_LEFT || keycode == KEY_A) 
 	{
-		case UP_ARROW :
-		{
-			refresh_player_pos(_data, 
-				_data->player_x + _data->player_dx,
-					_data->player_y + _data->player_dy);
-			break;
-		}
-		case LEFT_ARROW :
-		{
-			_data->player_a -= 0.1;
-			if (_data->player_a < 0)
-				_data->player_a += (2 * PI);
-			_data->player_dx = (cos(_data->player_a) * 20);
-			_data->player_dy = (sin(_data->player_a) * 20);
-			refresh_player_pos(_data, _data->player_x, _data->player_y);
-			break;
-		}
-		case DOWN_ARROW :
-		{
-			refresh_player_pos(_data, 
-				_data->player_x - _data->player_dx,
-					_data->player_y - _data->player_dy);
-			break;
-		}
-		case RIGHT_ARROW :
-		{
-			_data->player_a += 0.1;
-			if (_data->player_a > (2 * PI))
-				_data->player_a -= (2 * PI);
-			_data->player_dx = (cos(_data->player_a) * 20);
-			_data->player_dy = (sin(_data->player_a) * 20);
-			refresh_player_pos(_data, _data->player_x, _data->player_y);
-			break;
-		}
-		case ESC_KEY :
-		{
-			exit (0);
-		}
-		default :
-			printf("key = %d\n", keycode);
+		cub->data.player_a -= 0.1;
+		if (cub->data.player_a < 0)
+			cub->data.player_a += (2 * PI);
+		cub->data.player_dx = (cos(cub->data.player_a) * SPEED);
+		cub->data.player_dy = (sin(cub->data.player_a) * SPEED);
+		refresh_player_pos(cub);
 	}
+	else if (keycode == KEY_RIGHT || keycode == KEY_D)
+	{
+		cub->data.player_a += 0.1;
+		if (cub->data.player_a > (2 * PI))
+			cub->data.player_a -= (2 * PI);
+		cub->data.player_dx = (cos(cub->data.player_a) * SPEED);
+		cub->data.player_dy = (sin(cub->data.player_a) * SPEED);
+		refresh_player_pos(data, cub->data.player_x, cub->data.player_y);
+	}
+	else if (keycode == KEY_ESC)
 	return (0);
 }
 		
-void	cpy_map(t_data *_data)
+void	initdata(t_cub *cub)
 {
-	int		y;
-	int		x;
 
-	char map[MAP_HEIGHT][MAP_WIDTH] =
-	{
-		{1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,1,1}
-	};
+	cub->mlx = mlx_init();
+	cub->win = mlx_new_window(cub->mlx, 500, 500, "Fear");
+
+	cub->data.img_plr.width = PLR_WIDTH;
+	cub->data.img_plr.height = PLR_HEIGHT;
+	cub->data.img_eraser.width = PLR_WIDTH;
+	cub->data.img_eraser.height = PLR_HEIGHT;
+	cub->data.img_wall.width = BCK_WIDHT;
+	cub->data.img_wall.height = BCK_HEIGHT;
+	cub->data.img_ground.width = BCK_WIDTH;
+	cub->data.img_ground.height = BCK_HEIGHT;
+	cub->data.img_line.width = LIN_WIDTH;
+	cub->data.img_line.height = LIN_HEIGHT;
+
+	cub->data.img_plr.img = mlx_xpm_file_to_image(cub->mlx, "images/20px_Player.xpm", &cub->data.img_plr.width, &cub->data.img_plr.height);	
+	cub->data.img_eraser.img = mlx_xpm_file_to_image(cub->mlx, "images/20px_Black.xpm", &cub->data.img_eraser.width, &cub->data.img_eraser.height);	
+	cub->data.img_wall.img = mlx_xpm_file_to_image(cub->mlx, "images/50px_White.xpm", &cub->data.img_wall.width, &cub->data.img_wall.height);	
+	cub->data.img_ground.img = mlx_xpm_file_to_image(cub->mlx, "images/50px_Gray.xpm", &cub->data.img_ground.width, &cub->data.img_ground.height);	
+	cub->data.img_line.img = mlx_xpm_file_to_image(cub->mlx, "images/3px_Line.xpm", &cub->data.img_ground.width, &cub->data.img_ground.height);	
 	
-	y = 0;
-	while (y < MAP_HEIGHT)
-	{
-		x = 0;
-		while (x < MAP_HEIGHT)
-		{
-			_data->map[y][x] = map[y][x];
-			x++;
-		}	
-		y++;
-	}	
-}
-
-int	main()
-{
-	t_data	_data;
-
-	_data.mlx = mlx_init();
-	_data.win = mlx_new_window(_data.mlx, 500, 500, "Fear");
-
-	_data.img_plr.width = 20;
-	_data.img_plr.height = 20;
-	_data.img_eraser.width = 20;
-	_data.img_eraser.height = 20;
-	_data.img_wall.width = 20;
-	_data.img_wall.height = 20;
-	_data.img_ground.width = 20;
-	_data.img_ground.height = 20;
-	_data.img_line.width = 3;
-	_data.img_line.height = 3;
-
-	_data.img_plr.img = mlx_xpm_file_to_image(_data.mlx, "images/20px_Player.xpm", &_data.img_plr.width, &_data.img_plr.height);	
-	_data.img_eraser.img = mlx_xpm_file_to_image(_data.mlx, "images/20px_Black.xpm", &_data.img_eraser.width, &_data.img_eraser.height);	
-	_data.img_wall.img = mlx_xpm_file_to_image(_data.mlx, "images/50px_White.xpm", &_data.img_wall.width, &_data.img_wall.height);	
-	_data.img_ground.img = mlx_xpm_file_to_image(_data.mlx, "images/50px_Gray.xpm", &_data.img_ground.width, &_data.img_ground.height);	
-	_data.img_line.img = mlx_xpm_file_to_image(_data.mlx, "images/3px_Line.xpm", &_data.img_ground.width, &_data.img_ground.height);	
+	cub->data.player_a = 0;
+	cub->data.player_dx = (cos(cub->data.player_a) * SPEED);
+	cub->data.player_dy = (sin(cub->data.player_a) * SPEED);
 	
-	cpy_map(&_data);
-	_data.player_a = 0;
-	_data.player_dx = (cos(_data.player_a) * 5);
-	_data.player_dy = (sin(_data.player_a) * 5);
+	print_map(cub);
+	refresh_player_pos(cub, 225, 225);
 	
-	print_map(&_data);
-	refresh_player_pos(&_data, 225, 225);
-	
-	mlx_hook(_data.win, 2, 1L << 0, &key_hook, &_data);
-	mlx_loop(_data.mlx);
+	mlx_hook(cub->win, 2, 1L << 0, &key_hook, cub);
+	mlx_loop(cub->mlx);
 }

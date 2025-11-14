@@ -6,7 +6,7 @@
 /*   By: jutocche <jutocche@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/18 15:28:18 by jutocche          #+#    #+#             */
-/*   Updated: 2025/11/13 19:36:54 by nilamber         ###   ########.fr       */
+/*   Updated: 2025/11/14 11:10:27 by nilamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,28 @@
 
 # define WIN_WIDTH	1000
 # define WIN_HEIGHT	1000
+# define PLR_WIDTH	20
+# define PLR_HEIGHT	20
+# define LIN_WIDTH	3
+# define LIN_HEIGHT	3
+# define BCK_WIDTH	50
+# define BCK_HEIGHT	50
 
-# define KEY_ESCAPE	65307
-# define KEY_W		119
-# define KEY_A		97
-# define KEY_S		115
-# define KEY_D		100
-# define KEY_LEFT	65361
-# define KEY_RIGHT	65363
-# define KEY_UP		65362
-# define KEY_DOWN	65364
+# define OFFSET		PLR_WIDTH / 2 - LIN_WIDTH 
+
+# define SPEED		10
 
 # define PI 		3.14159265
+
+# define KEY_ESC	65307
+# define KEY_W		119
+# define KEY_S		115
+# define KEY_A		97
+# define KEY_D		100
+# define KEY_UP		65362
+# define KEY_DOWN	65364
+# define KEY_LEFT	65361
+# define KEY_RIGHT	65363
 
 # include "libft.h"
 # include "mlx.h"
@@ -39,6 +49,13 @@
 # include "mlx/mlx.h"
 # include "externals.h"
 
+typedef	struct	s_pos
+{
+	int	v;
+	int	delta;
+	int	s;
+
+}		t_pos;
 
 typedef struct	s_img
 {
