@@ -39,15 +39,13 @@
 # define KEY_RIGHT	65363
 
 # include "libft.h"
-# include "mlx.h"
 # include <fcntl.h>
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdbool.h>
-# include "mlx/mlx.h"
-# include "externals.h"
+# include "minilibx-linux/mlx.h"
 
 typedef	struct	s_pos
 {
@@ -107,11 +105,11 @@ typedef struct	s_file
 
 typedef	struct	s_plr
 {
-	float		plr_x;
-	float		plr_y;
-	float		plr_dx;
-	float		plr_dy;
-	float		plr_a;
+	float		x;
+	float		y;
+	float		dx;
+	float		dy;
+	float		a;
 }				t_plr;
 
 typedef struct	s_data
@@ -122,11 +120,12 @@ typedef struct	s_data
 	t_img	img_wall;
 	t_img	img_ground;
 	t_img	img_line;
+	t_plr	plr;
 }				t_data;
 
 typedef struct	s_cub
 {
-	t_data		_data
+	t_data		data;
 	t_file		file;
 	t_texture	north;
 	t_texture	south;
@@ -143,15 +142,15 @@ typedef struct	s_cub
 int				main(int argc, char **argv);
 
 // 0_free_cub_and_close.c
-void			free_cub_and_close(t_cub *cub);
-void			free_cub_filename(t_cub *cub);
-void free_cub_copy(t_cub *cub);
-void free_textures_map(t_cub *cub);
-void free_rgb_color_floor(t_cub *cub);
-void free_rgb_color_ceiling(t_cub *cub);
-void free_value_color(t_cub *cub);
-void free_cub_map(t_cub *cub);
-void cleanup_mlx(t_cub *cub);
+void	free_cub_and_close(t_cub *cub);
+void	free_cub_filename(t_cub *cub);
+void	free_cub_copy(t_cub *cub);
+void	free_textures_map(t_cub *cub);
+void	free_rgb_color_floor(t_cub *cub);
+void	free_rgb_color_ceiling(t_cub *cub);
+void	free_value_color(t_cub *cub);
+void	free_cub_map(t_cub *cub);
+void	cleanup_mlx(t_cub *cub);
 
 // 1_is_name_file_correct.c
 bool			is_name_file_correct(int argc, char *argv);
@@ -283,6 +282,19 @@ void			error_count_player(int count);
 // 40 
 int start_cub(t_cub *cub);
 
+
+//init_data.c
+void	init_data(t_cub *cub);
+
+//mlx_routine.c
+int	key_hook(int key_code, t_cub *cub);
+void	refresh_player_pos(t_cub *cub, int sign);
+void	print_map(t_cub *cub);
+void	print_line(t_cub *cub, t_data *data, float nx, float ny);
+
+//ft_abs.c
+int	ft_abs(int value);
+float	ft_fabs(float value);
 
 #endif
 

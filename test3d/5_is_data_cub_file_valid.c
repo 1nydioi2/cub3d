@@ -67,8 +67,8 @@ bool	is_data_cub_file_valid(t_cub *cub)
 
 bool init_mlx(t_cub *cub)
 {
-	cub->mlx.mlx = mlx_init();
-	if (!cub->mlx.mlx)
+	cub->mlx = mlx_init();
+	if (!cub->mlx)
 	{
 		ft_printf("Error\nmlx init failed\n");
 		return (false);

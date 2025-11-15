@@ -14,13 +14,13 @@
 
 void cleanup_mlx(t_cub *cub)
 {
-	if (cub->mlx.mlx_win)
-		mlx_destroy_window(cub->mlx.mlx, cub->mlx.mlx_win);
-	if (cub->mlx.mlx)
+	if (cub->win)
+		mlx_destroy_window(cub->mlx, cub->win);
+	if (cub->mlx)
 	{
-		mlx_destroy_display(cub->mlx.mlx);
-		free(cub->mlx.mlx);
-		cub->mlx.mlx = NULL;
+		mlx_destroy_display(cub->mlx);
+		free(cub->mlx);
+		cub->mlx = NULL;
 	}
 }
 

@@ -22,13 +22,13 @@ bool verify_textures_with_mlx(t_cub *cub, char *path, char *path_name)
 	width = 100;
 	height = 100;
 
-	img = mlx_xpm_file_to_image(cub->mlx.mlx, path, &width, &height);
+	img = mlx_xpm_file_to_image(cub->mlx, path, &width, &height);
 	if (!img)
 	{
 		ft_printf("Error\nCannot loading texture (MLX) with %s path\n", path_name);
 		return (false);
 	}
-	mlx_destroy_image(cub->mlx.mlx, img);
+	mlx_destroy_image(cub->mlx, img);
 	return (true);
 }
 

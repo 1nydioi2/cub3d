@@ -35,8 +35,9 @@ SRCS = 0_cub3d.c \
 	20_is_map_valid.c \
 	21_is_map_closed.c \
 	22_error_message_map.c \
-	40_start_cub.c\
-	main.c\
+	40_start_cub.c \
+	init_data.c \
+	mlx_routine.c \
 	ft_abs.c
 
 
@@ -46,7 +47,7 @@ SRCS = 0_cub3d.c \
 
 
 # Object files (objects/<path>.o)
-OBJS = $(SRCS:.c=$(OBJS_DIR)/.o)
+OBJS = $(SRCS:.c=.o)
 
 # Compilation and flags
 CC = cc

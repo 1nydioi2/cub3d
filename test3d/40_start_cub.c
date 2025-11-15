@@ -17,17 +17,10 @@ int	close_window(void *param)
 	return (0);
 }
 
-int	key_hook(int keycode, t_cub *cub)
-{
-	if (keycode == 65307)
-		close_program(cub);
-	return (0);
-}
-
 int start_cub(t_cub *cub)
 {
-	cub->mlx.mlx_win = mlx_new_window(cub->mlx.mlx, WIN_WIDTH, WIN_HEIGHT, "cub3d");
-	if (!cub->mlx.mlx_win)
+	cub->win = mlx_new_window(cub->mlx, WIN_WIDTH, WIN_HEIGHT, "cub3d");
+	if (!cub->win)
 	{
 		cleanup_mlx(cub);
 		return (-1);
@@ -36,8 +29,10 @@ int start_cub(t_cub *cub)
 	// mlx get data adr 
 	// put img to windows
 	// use a bool with key press and key release to avoid toggle being annoyong
-	mlx_key_hook(cub->mlx.mlx_win, key_hook, cub);
-	mlx_hook(cub->mlx.mlx_win, 17, 0, close_window, cub);
-	mlx_loop(cub->mlx.mlx);
+	init_data(cub);
+	refresh_player_pos(cub, 1);
+	mlx_hook(cub->win, 2, 1L << 0, &key_hook, cub);
+	mlx_hook(cub->win, 17, 0, close_window, cub);
+	mlx_loop(cub->mlx);	
 	return (0);
 }
