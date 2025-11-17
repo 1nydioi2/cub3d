@@ -6,7 +6,7 @@
 /*   By: jutocche <jutocche@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/18 15:28:18 by jutocche          #+#    #+#             */
-/*   Updated: 2025/11/17 20:44:51 by nilamber         ###   ########.fr       */
+/*   Updated: 2025/11/14 11:10:27 by nilamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,26 +28,24 @@
 
 # define PI 		3.14159265
 
-# define KEY_ESCAPE	65307
+# define KEY_ESC	65307
 # define KEY_W		119
-# define KEY_A		97
 # define KEY_S		115
+# define KEY_A		97
 # define KEY_D		100
-# define KEY_LEFT	65361
-# define KEY_RIGHT	65363
 # define KEY_UP		65362
 # define KEY_DOWN	65364
+# define KEY_LEFT	65361
+# define KEY_RIGHT	65363
 
 # include "libft.h"
-# include "mlx.h"
-// # include "mlx_int.h"
 # include <fcntl.h>
 # include <math.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <stdbool.h>
-
+# include "minilibx-linux/mlx.h"
 
 typedef	struct	s_pos
 {
@@ -144,15 +142,15 @@ typedef struct	s_cub
 int				main(int argc, char **argv);
 
 // 0_free_cub_and_close.c
-void			free_cub_and_close(t_cub *cub);
-void			free_cub_filename(t_cub *cub);
-void free_cub_copy(t_cub *cub);
-void free_textures_map(t_cub *cub);
-void free_rgb_color_floor(t_cub *cub);
-void free_rgb_color_ceiling(t_cub *cub);
-void free_value_color(t_cub *cub);
-void free_cub_map(t_cub *cub);
-void cleanup_mlx(t_cub *cub);
+void	free_cub_and_close(t_cub *cub);
+void	free_cub_filename(t_cub *cub);
+void	free_cub_copy(t_cub *cub);
+void	free_textures_map(t_cub *cub);
+void	free_rgb_color_floor(t_cub *cub);
+void	free_rgb_color_ceiling(t_cub *cub);
+void	free_value_color(t_cub *cub);
+void	free_cub_map(t_cub *cub);
+void	cleanup_mlx(t_cub *cub);
 
 // 1_is_name_file_correct.c
 bool			is_name_file_correct(int argc, char *argv);
@@ -282,8 +280,8 @@ void			error_count_player(int count);
 
 
 // 40 
-int 	start_cub(t_cub *cub);
-int		close_window(void *param);
+int start_cub(t_cub *cub);
+
 
 //init_data.c
 void	init_data(t_cub *cub);
@@ -295,9 +293,11 @@ void	print_map(t_cub *cub);
 void	print_line(t_cub *cub, t_data *data, float nx, float ny);
 
 //ft_abs.c
-int		ft_abs(int value);
+int	ft_abs(int value);
 float	ft_fabs(float value);
 
-
-
 #endif
+
+
+
+

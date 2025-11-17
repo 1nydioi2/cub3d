@@ -9,7 +9,6 @@ NAME = cub3d
 LIBFT_DIR = libft
 MLX_DIR = minilibx-linux
 OBJS_DIR = objects
-ASAN = -fsanitize=address -g3
 
 # Sources files
 SRCS = 0_cub3d.c \
@@ -48,11 +47,12 @@ SRCS = 0_cub3d.c \
 
 
 # Object files (objects/<path>.o)
-OBJS = $(SRCS:%.c=$(OBJS_DIR)/%.o)
+OBJS = $(SRCS:.c=.o)
 
 # Compilation and flags
+ASAN = -fsanitize=address -g3
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I$(LIBFT_DIR) -I$(MLX_DIR)
+CFLAGS = -Wall -Wextra -Werror $(ASAN) -I$(LIBFT_DIR) -I$(MLX_DIR)
 
 # Library
 LIBFT = -L$(LIBFT_DIR) -lft
@@ -80,10 +80,10 @@ $(NAME): $(OBJS) | libft mlx
 	$(CC) $(CFLAGS) $(OBJS) $(MLX) $(LIBFT) -o $(NAME)
 
 # Compile each .o from .c (preserving folders, handling dots)
-$(OBJS_DIR)/%.o: %.c
-	@mkdir -p $(dir $@)
-	@printf "$(YELLOW)🔨 Compilation de $<$(NC)\n"
-	$(CC) $(CFLAGS) -c $< -o $@
+#$(OBJS_DIR)/%.o: %.c
+#	@mkdir -p $(dir $@)
+#	@printf "$(YELLOW)🔨 Compilation de $<$(NC)\n"
+#	$(CC) $(CFLAGS) -c $< -o $@
 
 # Build libft
 libft:
@@ -101,7 +101,7 @@ mlx:
 
 clean:
 	@printf "$(RED)🧹 Suppression des fichiers objets...$(NC)\n"
-	rm -rf $(OBJS_DIR)
+	rm -rf $(OBJS)
 
 fclean: clean
 	@printf "$(RED)🗑️  Suppression de l’exécutable...$(NC)\n"
@@ -111,7 +111,7 @@ clean_library:
 	@printf "$(RED)🧹 Suppression des objets de libft...$(NC)\n"
 	$(MAKE) clean -C $(LIBFT_DIR)
 	$(MAKE) clean -C $(MLX_DIR)
-	rm -rf $(OBJS_DIR)
+	rm -rf $(OBJS)
 
 fclean_library: clean_library
 	@printf "$(RED)🗑️  Suppression de l’exécutable et libft...$(NC)\n"

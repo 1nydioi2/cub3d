@@ -6,7 +6,7 @@
 /*   By: nilamber <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/12 14:19:52 by nilamber          #+#    #+#             */
-/*   Updated: 2025/11/14 11:10:04 by nilamber         ###   ########.fr       */
+/*   Updated: 2025/11/17 20:36:34 by nilamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ void	set_pos(t_pos *x, t_pos	*y, t_pos **weak, t_pos **strong)
 {
 	x->s = 1 - (2 * (x->delta < 0));
 	x->delta = ft_abs(x->delta);
-	x->v = 0;
+	x->v = 1 * x->s;
 
 	y->s = 1 - (2 * (y->delta < 0));
 	y->delta = ft_abs(y->delta);
-	y->v = 0;
+	y->v = 1 * x->s;
 
 	if (x->delta < y->delta)
 	{
@@ -56,7 +56,7 @@ void	print_line(t_cub *cub, t_data *data, float nx, float ny)
 //	printf("div = %d\tpx = %f\tpy = %f\tpa = %f\n",div, data->plr.x, data->plr.y, data->plr.a);
 //	printf("x = %d\ty = %d\txd = %d, yd = %d\tnx = %f, ny = %f\n",
 //			x.v, y.v, x.delta, y.delta, nx, ny);
-	while (ft_abs(x.v) + ft_abs(y.v) < x.delta + y.delta)
+	while (ft_abs(x.v) + ft_abs(y.v) < x.delta + y.delta + 2)
 	{
 		if (ft_abs(strong->v) > ft_abs(weak->v) * div)
 			weak->v += weak->s;
@@ -137,7 +137,7 @@ int	key_hook(int keycode, t_cub *cub)
 		cub->data.plr.dy = (sin(cub->data.plr.a) * SPEED);
 		refresh_player_pos(cub, 1);
 	}
-	else if (keycode == KEY_ESC)
-		free_cub_and_close(cub);
+	else if (keycode == KEY_ESCAPE)
+		close_window(cub);
 	return (0);
 }

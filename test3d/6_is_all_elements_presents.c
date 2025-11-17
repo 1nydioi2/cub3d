@@ -6,7 +6,7 @@
 /*   By: jutocche <jutocche@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/25 10:39:25 by jutocche          #+#    #+#             */
-/*   Updated: 2025/11/01 16:01:42 by jutocche         ###   ########.fr       */
+/*   Updated: 2025/11/17 19:56:19 by nilamber         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ bool is_all_elements_presents(t_cub *cub)
 	int k;
 	int result;
 	
-	i *= 0;
-	j *= 0;
-	k *= 0;
+	i = 0;
+	j = 0;
+	k = 0;
 	result = check_all_elements(cub, i, j, k);
 	if (result <= -1)
 	{
